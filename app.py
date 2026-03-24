@@ -14,10 +14,13 @@ if archivo:
     df.columns = df.columns.str.strip()
 
     # Nombres reales
-    col_fecha = "FECHA"
-    col_nivel = "NIVEL (m)"
-    col_codigo = "CODIGO"
-    col_provincia = "PROVINCIA"
+    col_fecha = [col for col in df.columns if "fecha" in col.lower()][0]
+    df.columns = df.columns.str.strip().str.lower()
+    col_fecha = [col for col in df.columns if "fecha" in col][0]
+    col_nivel = [col for col in df.columns if "nivel" in col][0]
+    col_codigo = [col for col in df.columns if "codigo" in col][0]
+    col_provincia = [col for col in df.columns if "provincia" in col][0]
+    
 
     # Convertir fecha
     df[col_fecha] = pd.to_datetime(df[col_fecha], errors="coerce")
