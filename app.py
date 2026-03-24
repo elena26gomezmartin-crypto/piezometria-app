@@ -10,35 +10,37 @@ if archivo:
         # Leer Excel
         df = pd.read_excel(archivo)
 
-        # Limpiar nombres de columnas (quita espacios raros)
+        # Limpiar columnas (muy importante)
         df.columns = df.columns.astype(str).str.strip()
 
-        # Diccionario para guardar columnas detectadas
-        columnas = {}
+        # Mostrar columnas reales (para comprobar)
+        st.write("Columnas reales:")
+        st.write(df.columns.tolist())
+
+        # 🔥 SELECCIÓN DIRECTA (SIN AUTOMÁTICOS)
+        columnas = []
 
         for col in df.columns:
-            col_lower = col.lower()
+            nombre = col.upper().replace(" ", "")
 
-            if "codigo" in col_lower:
-                columnas["codigo"] = col
-            elif "municipio" in col_lower:
-                columnas["municipio"] = col
-            elif "fecha" in col_lower:
-                columnas["fecha"] = col
-            elif "nivel" in col_lower:
-                columnas["nivel"] = col
-            elif "sector" in col_lower:
-                columnas["sector"] = col
+            if nombre == "CODIGO":
+                columnas.append(col)
 
-        # Ver qué se ha detectado
-        st.write("Columnas detectadas:", columnas)
+            elif nombre == "MUNICIPIO":
+                columnas.append(col)
 
-        # Crear lista final
-        columnas_finales = [columnas.get(k) for k in ["codigo","municipio","fecha","nivel","sector"]]
-        columnas_finales = [c for c in columnas_finales if c is not None]
+            elif "FECHA" in nombre:
+                columnas.append(col)
 
-        # Mostrar tabla
-        st.dataframe(df[columnas_finales], use_container_width=True)
+            elif "NIVEL" in nombre:
+                columnas.append(col)
+
+            elif "SECTOR" in nombre:
+                columnas.append(col)
+
+        # Mostrar resultado
+        st.subheader("📊 Datos filtrados")
+        st.dataframe(df[columnas], use_container_width=True)
 
     except Exception as e:
         st.error(f"Error: {e}")
