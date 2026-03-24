@@ -13,16 +13,17 @@ if archivo:
         df.columns = df.columns.astype(str).str.strip()
 
         # 🔍 Detectar columnas automáticamente
-       columnas = [
-    "CODIGO",
-    "MUNICIPIO",
-    "FECHA",
-    "NIVEL (m)",
-    "SECTOR"
-]
+        columnas = [
+            "CODIGO",
+            "MUNICIPIO",
+            "FECHA",
+            "NIVEL (m)",
+            "SECTOR"
+        ]
 
-# Filtrar solo las que existan (por seguridad)
-columnas = [col for col in columnas if col in df.columns]
+        # Filtrar solo las que existan (por seguridad)
+        columnas = [col for col in columnas if col in df.columns]
+
         # Quitar None (por si alguna no se detecta)
         columnas = [c for c in columnas if c is not None]
 
