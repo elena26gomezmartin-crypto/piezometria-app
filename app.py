@@ -7,30 +7,36 @@ archivo = st.file_uploader("Sube tu Excel", type=["xlsx"])
 
 if archivo:
     try:
-        df = pd.read_excel(archivo)
+        # 🔥 Leer Excel SIN asumir encabezado
+        df_raw = pd.read_excel(archivo, header=None)
 
-        # Limpiar nombres de columnas
-        df.columns = df.columns.astype(str).str.strip()
+        st.subheader("🔍 Vista previa del Excel (para detectar cabecera)")
+        st.dataframe(df_raw.head(10), use_container_width=True)
 
-        # 🔍 Detectar columnas automáticamente
-        columnas = [
-            "CODIGO",
-            "MUNICIPIO",
-            "FECHA",
-            "NIVEL (m)",
-            "SECTOR"
-        ]
+        # 🔎 Buscar la fila donde empieza el encabezado (donde está CODIGO)
+        fila_header = None
+        for i in range(10):
+            fila = df_raw.iloc[i].astype(str).str.upper()
+            if fila.str.contains("CODIGO").any():
+                fila_header = i
+                break
 
-        # Filtrar solo las que existan (por seguridad)
-        columnas = [col for col in columnas if col in df.columns]
+        if fila_header is None:
+            st.error("No se encontró la fila de cabecera")
+        else:
+            st.success(f"Cabecera detectada en fila {fila_header}")
 
-        # Quitar None (por si alguna no se detecta)
-        columnas = [c for c in columnas if c is not None]
+            # 🔥 Leer de nuevo usando la cabecera correcta
+            df = pd.read_excel(archivo, header=fila_header)
 
-        st.success("Columnas seleccionadas")
+            # Limpiar nombres
+            df.columns = df.columns.astype(str).str.strip()
 
-        # Mostrar solo esas columnas
-        st.dataframe(df[columnas], use_container_width=True)
+            st.subheader("📋 TODAS las columnas detectadas")
+            st.write(df.columns.tolist())
+
+            st.subheader("📊 DATOS COMPLETOS")
+            st.dataframe(df, use_container_width=True)
 
     except Exception as e:
         st.error(f"Error: {e}")
