@@ -8,7 +8,7 @@ archivo = st.file_uploader("Sube tu Excel", type=["xlsx"])
 if archivo:
     df = pd.read_excel(archivo)
 
-    df["Fecha"] = pd.to_datetime(df["Fecha"])
+    df["Fecha de medida"] = pd.to_datetime(df["Fecha de medida"])
 
     st.subheader("Vista de datos")
     st.dataframe(df)
@@ -22,6 +22,6 @@ if archivo:
     df_filtrado = df_filtrado.sort_values("Fecha")
 
     st.subheader("Evolución del nivel")
-    st.line_chart(df_filtrado.set_index("Fecha")["Nivel"])
+    st.line_chart(df_filtrado.set_index("Fecha de medida")["Nivel"])
 
     st.write("Nivel medio:", round(df_filtrado["Nivel"].mean(), 2))
