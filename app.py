@@ -7,23 +7,26 @@ archivo = st.file_uploader("Sube tu Excel", type=["xlsx"])
 
 if archivo:
     try:
-        df = pd.read_excel(archivo)
+        # 🔥 Leer TODAS las columnas sin limitaciones
+        df = pd.read_excel(archivo, engine="openpyxl")
 
         # Limpiar nombres
-        df.columns = df.columns.astype(str).str.strip()
+        df.columns = [str(c).strip() for c in df.columns]
 
-        st.success("Excel cargado correctamente")
+        st.success(f"Columnas detectadas: {len(df.columns)}")
 
-        # 🔍 MOSTRAR TODAS LAS COLUMNAS (CLAVE)
-        st.subheader("Selecciona las columnas que quieres usar")
+        # 🔍 MOSTRAR TODAS LAS COLUMNAS CLARAMENTE
+        st.subheader("📋 Todas las columnas del Excel")
+        st.write(df.columns.tolist())
 
-        col_codigo = st.selectbox("Código", df.columns)
-        col_municipio = st.selectbox("Municipio", df.columns)
-        col_fecha = st.selectbox("Fecha", df.columns)
-        col_nivel = st.selectbox("Nivel", df.columns)
-        col_sector = st.selectbox("Sector", df.columns)
+        # 👇 SELECTORES (ahora deberían salir TODAS)
+        col_codigo = st.selectbox("Código", df.columns.tolist())
+        col_municipio = st.selectbox("Municipio", df.columns.tolist())
+        col_fecha = st.selectbox("Fecha", df.columns.tolist())
+        col_nivel = st.selectbox("Nivel", df.columns.tolist())
+        col_sector = st.selectbox("Sector", df.columns.tolist())
 
-        # Mostrar resultado
+        # Mostrar datos
         columnas = [col_codigo, col_municipio, col_fecha, col_nivel, col_sector]
 
         st.subheader("📊 Datos filtrados")
