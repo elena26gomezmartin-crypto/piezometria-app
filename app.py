@@ -8,8 +8,8 @@ st.title("📊 Control piezométrico")
 archivo = st.file_uploader("Sube tu Excel", type=["xlsx"])
 
 if archivo:
-    df = pd.read_excel(archivo)
-
+    df = pd.read_excel(archivo, header=1)
+    
     # Limpiar columnas
     df.columns = df.columns.str.strip()
 
