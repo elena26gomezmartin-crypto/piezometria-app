@@ -7,38 +7,25 @@ archivo = st.file_uploader("Sube tu Excel", type=["xlsx"])
 
 if archivo:
     try:
-        # Leer Excel
         df = pd.read_excel(archivo)
 
-        # Limpiar columnas (muy importante)
+        # Limpiar nombres
         df.columns = df.columns.astype(str).str.strip()
 
-        # Mostrar columnas reales (para comprobar)
-        st.write("Columnas reales:")
-        st.write(df.columns.tolist())
+        st.success("Excel cargado correctamente")
 
-        # 🔥 SELECCIÓN DIRECTA (SIN AUTOMÁTICOS)
-        columnas = []
+        # 🔍 MOSTRAR TODAS LAS COLUMNAS (CLAVE)
+        st.subheader("Selecciona las columnas que quieres usar")
 
-        for col in df.columns:
-            nombre = col.upper().replace(" ", "")
-
-            if nombre == "CODIGO":
-                columnas.append(col)
-
-            elif nombre == "MUNICIPIO":
-                columnas.append(col)
-
-            elif "FECHA" in nombre:
-                columnas.append(col)
-
-            elif "NIVEL" in nombre:
-                columnas.append(col)
-
-            elif "SECTOR" in nombre:
-                columnas.append(col)
+        col_codigo = st.selectbox("Código", df.columns)
+        col_municipio = st.selectbox("Municipio", df.columns)
+        col_fecha = st.selectbox("Fecha", df.columns)
+        col_nivel = st.selectbox("Nivel", df.columns)
+        col_sector = st.selectbox("Sector", df.columns)
 
         # Mostrar resultado
+        columnas = [col_codigo, col_municipio, col_fecha, col_nivel, col_sector]
+
         st.subheader("📊 Datos filtrados")
         st.dataframe(df[columnas], use_container_width=True)
 
