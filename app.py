@@ -6,9 +6,10 @@ st.set_page_config(page_title="Control piezométrico", layout="wide")
 st.title("📊 Control piezométrico")
 
 archivo = st.file_uploader("Sube tu Excel", type=["xlsx"])
-
+st.write(df.head())
+st.write(df.columns)
 if archivo:
-    df = pd.read_excel(archivo, header=1)
+    df = pd.read_excel(archivo, header=None)
     
     # Limpiar columnas
     df.columns = df.columns.str.strip()
