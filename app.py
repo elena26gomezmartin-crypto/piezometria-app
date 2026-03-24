@@ -7,32 +7,38 @@ archivo = st.file_uploader("Sube tu Excel", type=["xlsx"])
 
 if archivo:
     try:
-        # Leer Excel normal (cabecera en fila 1)
+        # Leer Excel
         df = pd.read_excel(archivo)
 
-        # Limpiar nombres de columnas (por si hay espacios)
-        df.columns = df.columns.str.strip()
+        # Limpiar nombres de columnas (quita espacios raros)
+        df.columns = df.columns.astype(str).str.strip()
 
-        # 🔥 Columnas EXACTAS que quieres
-        columnas_deseadas = [
-            "CODIGO",
-            "MUNICIPIO",
-            "FECHA",
-            "NIVEL (m)",
-            "SECTOR"
-        ]
+        # Diccionario para guardar columnas detectadas
+        columnas = {}
 
-        # Ver qué columnas existen realmente
-        columnas_existentes = [col for col in columnas_deseadas if col in df.columns]
+        for col in df.columns:
+            col_lower = col.lower()
 
-        # Aviso si falta alguna
-        if len(columnas_existentes) < len(columnas_deseadas):
-            st.warning("Alguna columna no coincide exactamente con el Excel")
-            st.write("Columnas disponibles:")
-            st.write(df.columns.tolist())
+            if "codigo" in col_lower:
+                columnas["codigo"] = col
+            elif "municipio" in col_lower:
+                columnas["municipio"] = col
+            elif "fecha" in col_lower:
+                columnas["fecha"] = col
+            elif "nivel" in col_lower:
+                columnas["nivel"] = col
+            elif "sector" in col_lower:
+                columnas["sector"] = col
 
-        # Mostrar solo las columnas que existen
-        st.dataframe(df[columnas_existentes], use_container_width=True)
+        # Ver qué se ha detectado
+        st.write("Columnas detectadas:", columnas)
+
+        # Crear lista final
+        columnas_finales = [columnas.get(k) for k in ["codigo","municipio","fecha","nivel","sector"]]
+        columnas_finales = [c for c in columnas_finales if c is not None]
+
+        # Mostrar tabla
+        st.dataframe(df[columnas_finales], use_container_width=True)
 
     except Exception as e:
         st.error(f"Error: {e}")
